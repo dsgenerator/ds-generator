@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>DS-Generator | Propostas + GFC + Tarefas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- TELA DE LOGIN -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="logo-area">
+                <h1>DS-Generator</h1>
+                <span>Sistema Integrado</span>
+            </div>
+            <div class="input-group">
+                <label>Usuário</label>
+                <input type="text" id="loginUser" placeholder="Digite seu usuário">
+            </div>
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="loginPassword" placeholder="********">
+            </div>
+            <button id="btnLogin" class="btn-primary">Acessar</button>
+        </div>
+    </div>
+
+    <!-- LAYOUT PRINCIPAL (APÓS LOGIN) -->
+    <div id="mainLayout" class="main-layout" style="display: none;">
+        <!-- Cabeçalho centralizado -->
+        <header class="main-header">
+            <h1>DS Generator</h1>
+        </header>
+
+        <div class="layout-content">
+            <!-- Barra lateral fixa -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <button class="sidebar-btn" data-module="proposta">
+                        <span></span> Generator Proposal
+                    </button>
+                    <button class="sidebar-btn" data-module="tarefas">
+                        <span></span> Generator Tasks
+                    </button>
+                    <button class="sidebar-btn" data-module="gfc">
+                        <span></span> Generator Factor Commission (GFC)
+                    </button>
+                </nav>
+                <div class="sidebar-footer">
+                    <button id="btnLogoutSidebar" class="btn-outline"> Sair</button>
+                </div>
+            </aside>
+
+            <!-- Área de conteúdo principal -->
+            <main class="main-content">
+                <!-- Módulo de Propostas -->
+                <div id="propostaModule" class="module-container active-module">
+                    <div class="app-container">
+                        <!-- WIZARD STEPS (indicadores) -->
+                        <div class="steps-indicator">
+                            <div class="step-item" data-step="1">1. Dados</div>
+                            <div class="step-item" data-step="2">2. Itens</div>
+                            <div class="step-item" data-step="3">3. Resumo</div>
+                        </div>
+
+                        <!-- STEP 1 - DADOS DA PROPOSTA -->
+                        <div id="stepDados" class="step-container active-step">
+                            <div class="form-card">
+                                <h3>Cadastro da Proposta</h3>
+                                <div class="form-row">
+                                    <div class="form-field">
+                                        <label>Nome empresa *</label>
+                                        <input type="text" id="empresaNome" placeholder="Razão social / Nome fantasia">
+                                    </div>
+                                    <div class="form-field">
+                                        <label>Validade da proposta</label>
+                                        <input type="date" id="validadeData">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-field">
+                                        <label>Nome ponto focal</label>
+                                        <input type="text" id="pontoFocal" placeholder="Contato principal">
+                                    </div>
+                                    <div class="form-field">
+                                        <label>Referência de users</label>
+                                        <input type="text" id="refUsers" placeholder="Ex: 50 usuários / Projeto X">
+                                    </div>
+                                </div>
+                                <!-- Observações Gerais (etapa Dados) -->
+                                <div class="form-field" style="margin-top: 0.5rem;">
+                                    <label>Observações Gerais</label>
+                                    <textarea id="observacaoGeral" rows="3" placeholder="Observações gerais sobre a proposta..." style="width: 100%; padding: 0.65rem; border: 1px solid #ced4da; border-radius: 8px; resize: vertical;"></textarea>
+                                </div>
+                                <div class="action-buttons">
+                                    <button id="cancelarDados" class="btn-secondary">Cancelar</button>
+                                    <button id="avancarDados" class="btn-primary">Avançar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2 - ITENS (SERVIÇOS) -->
+                        <div id="stepItens" class="step-container">
+                            <div class="form-card">
+                                <h3>Itens da Proposta</h3>
+                                <div class="toolbar-itens">
+                                    <button id="abrirListaServicosBtn" class="btn-accent"> Selecionar Serviço</button>
+                                    <button id="limparItensBtn" class="btn-secondary" style="margin-left: 10px;"> Limpar tudo</button>
+                                </div>
+                                <!-- Tabela de itens adicionados -->
+                                <div class="table-wrapper">
+                                    <table id="tabelaItens" class="data-table">
+                                        <thead>
+                                            <tr><th>Serviço</th><th>Adesão (R$)</th><th>Mensal (R$)</th><th>Ações</th>
+                                        </thead>
+                                        <tbody id="itensTableBody">
+                                            <tr class="empty-row"><td colspan="4">Nenhum item adicionado</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Observações da Negociação (etapa Itens) -->
+                                <div class="form-field" style="margin-top: 1rem;">
+                                    <label>Observações da Negociação</label>
+                                    <textarea id="observacaoNegociacao" rows="3" placeholder="Informações adicionais, condições especiais, etc." style="width: 100%; padding: 0.65rem; border: 1px solid #ced4da; border-radius: 8px; resize: vertical;"></textarea>
+                                </div>
+                                <div class="action-buttons">
+                                    <button id="voltarItens" class="btn-secondary">Voltar</button>
+                                    <button id="avancarItens" class="btn-primary">Avançar</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3 - RESUMO DA PROPOSTA -->
+                        <div id="stepResumo" class="step-container">
+                            <div class="form-card resumo-card">
+                                <h3>Resumo da Proposta</h3>
+                                <div id="resumoDadosCliente" class="resumo-cliente"></div>
+                                <div class="resumo-itens">
+                                    <h4>Itens contratados</h4>
+                                    <div id="resumoItensLista"></div>
+                                </div>
+                                <div id="resumoTotal" class="resumo-total"></div>
+                                <div class="action-buttons">
+                                    <button id="voltarResumo" class="btn-secondary">Voltar</button>
+                                    <button id="imprimirResumo" class="btn-primary">Imprimir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Módulo GFC -->
+                <div id="gfcModule" class="module-container">
+                    <div class="gfc-container">
+                        <div class="gfc-header">
+                            <h2>Generator Factor Commission (GFC)</h2>
+                            <div class="gfc-actions">
+                                <button id="btnNovaVenda" class="btn-primary"> Nova venda</button>
+                                <button id="btnReceberComissao" class="btn-accent"> Receber comissão</button>
+                            </div>
+                        </div>
+
+                        <!-- Filtros -->
+                        <div class="gfc-filters">
+                            <div class="filter-group">
+                                <label>Vencimento de:</label>
+                                <input type="date" id="filtroVencimentoInicio">
+                            </div>
+                            <div class="filter-group">
+                                <label>até:</label>
+                                <input type="date" id="filtroVencimentoFim">
+                            </div>
+                            <div class="filter-group">
+                                <label>Status:</label>
+                                <select id="filtroStatus">
+                                    <option value="">Todos</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="A receber">A receber</option>
+                                    <option value="Recebida">Recebida</option>
+                                    <option value="Não elegível">Não elegível</option>
+                                </select>
+                            </div>
+                            <button id="btnAplicarFiltros" class="btn-secondary">Aplicar</button>
+                            <button id="btnLimparFiltros" class="btn-secondary">Limpar</button>
+                            <button id="btnRelatorioGfc" class="btn-secondary">📄 Relatório</button>
+                        </div>
+
+                        <!-- Tabela de vendas -->
+                        <div class="table-wrapper">
+                            <table id="gfcTabela" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 30px;"><input type="checkbox" id="selecionarTodos"></th>
+                                        <th>Cliente</th><th>CNPJ</th><th>Serviço</th>
+                                        <th>Adesão</th><th>Mensal</th>
+                                        <th>Vencimento</th>
+                                        <th>% Adesão</th><th>% Mensal</th>
+                                        <th>Comissão Adesão</th><th>Comissão Mensal</th>
+                                        <th>Status</th><th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gfcTabelaBody">
+                                    <tr><td colspan="13">Nenhum registro encontrado.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Módulo Gestão de Tarefas -->
+                <div id="tasksModule" class="module-container">
+                    <div class="task-container">
+                        <div class="task-header">
+                            <h2>Generator Tasks</h2>
+                            <div class="task-actions">
+                                <button id="btnNovaTarefa" class="btn-primary"> Adicionar tarefa</button>
+                            </div>
+                        </div>
+
+                        <!-- Filtros -->
+                        <div class="task-filters">
+                            <div class="filter-group">
+                                <label>Status:</label>
+                                <select id="taskFilterStatus">
+                                    <option value="">Todos (exceto Encerrada)</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Em andamento">Em andamento</option>
+                                    <option value="Em pausa">Em pausa</option>
+                                    <option value="Encerrada">Encerrada</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Criação de:</label>
+                                <input type="date" id="taskFilterDataInicio">
+                            </div>
+                            <div class="filter-group">
+                                <label>até:</label>
+                                <input type="date" id="taskFilterDataFim">
+                            </div>
+                            <button id="btnAplicarFiltrosTasks" class="btn-secondary">Aplicar</button>
+                            <button id="btnLimparFiltrosTasks" class="btn-secondary">Limpar</button>
+                        </div>
+
+                        <!-- Listagem de tarefas -->
+                        <div class="table-wrapper">
+                            <table id="tasksTable" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome da tarefa</th>
+                                        <th>Solicitante</th>
+                                        <th>Status</th>
+                                        <th>Tempo gasto</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tasksTableBody">
+                                    <tr><td colspan="5">Nenhuma tarefa encontrada.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAIS -->
+    <div id="modalServicos" class="modal-overlay">
+        <div class="modal-container modal-large">
+            <div class="modal-header">
+                <h3>Lista de Serviços</h3>
+                <button class="close-modal" id="closeServicosModal">&times;</button>
+            </div>
+            <div class="modal-body" id="listaServicosBody">
+                <div class="loading-msg">Carregando serviços...</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="fecharServicosBtn">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalValores" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Definir valores do serviço</h3>
+                <button class="close-modal" id="closeValoresModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-field">
+                    <label>Serviço selecionado</label>
+                    <input type="text" id="servicoSelecionadoNome" readonly disabled>
+                </div>
+                <div class="form-field">
+                    <label>Adesão (R$)</label>
+                    <input type="number" id="adesaoValor" step="0.01" value="0.00" placeholder="0,00">
+                </div>
+                <div class="form-field">
+                    <label>Mensal (R$)</label>
+                    <input type="number" id="mensalValor" step="0.01" value="0.00" placeholder="0,00">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelarValoresBtn">Cancelar</button>
+                <button class="btn-primary" id="salvarItemBtn">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalComentario" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalComentarioTitulo">Comentário</h3>
+                <button class="close-modal" id="closeComentarioModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-field">
+                    <label>Comentário *</label>
+                    <textarea id="comentarioTexto" rows="4" placeholder="Descreva o motivo da pausa/encerramento..." style="width: 100%; padding: 0.65rem; border: 1px solid #ced4da; border-radius: 8px; resize: vertical;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelarComentario">Cancelar</button>
+                <button class="btn-primary" id="salvarComentario">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
